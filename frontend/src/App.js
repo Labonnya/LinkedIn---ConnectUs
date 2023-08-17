@@ -34,21 +34,14 @@ function App() {
   return (
     <div className="App">
     <Routes>
-      <Route path="/" element={
-        <LoginForm />
-        } />
-     
+      <Route path="/" element={ <LoginForm />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<Register />} />
-    
       <Route path="*" element={<div><p className="text-light">Page Not Found!</p></div>} />
-   
       <Route path="/post" element={<Post />} />
       <Route path="/postList" element={<PostsList />} />
       <Route path="/notification" element={<Notification/>} />
       <Route path="/posts/:postId" element={<DetailedPost/>} />
-
-
     </Routes>
     </div>
   );
