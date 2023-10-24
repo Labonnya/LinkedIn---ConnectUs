@@ -87,7 +87,7 @@ function LoginForm() {
     const formData = new FormData();
     formData.append("username", email);
     formData.append("password", password);
-    fetch("http://localhost:8000/login/", {
+    fetch("http://localhost:80/server1/login/", {
       method: "POST",
       body: formData,
     })

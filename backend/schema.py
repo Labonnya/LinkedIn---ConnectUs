@@ -28,72 +28,7 @@ class updateUserInfo(BaseModel):
     class Config():
         orm_mode = True
 
-class mcq(BaseModel):
-    question: str
-    option1: str
-    option2: str
-    option3: str
-    option4: str
-    correct_ans: str
-    round: int
-    level: int
-    quiz_id: int
-    class Config():
-        orm_mode = True
 
-
-class showMcq(BaseModel):
-    quiz_id: int
-    question: str
-    option1: str
-    option2: str
-    option3: str
-    option4: str
-    correct_ans: str
-    round: int
-    level: int
-    class Config():
-        orm_mode = True
-
-class updateMcq(BaseModel):
-    question: Optional[str]
-    option1: Optional[str]
-    option2: Optional[str]
-    option3: Optional[str]
-    option4: Optional[str]
-    correct_ans: Optional[str]
-    round: Optional[int]
-    level: Optional[int]
-    class Config():
-        orm_mode = True
-
-
-class quiz(BaseModel):
-    heading: str
-    level: int
-    total_marks:int
-    class Config():
-        orm_mode = True
-
-class updateQuiz(BaseModel):
-    heading: Optional[str]
-    level: Optional[int]
-    total_marks: Optional[int]
-    class Config():
-        orm_mode = True
-
-# class userOutput(showUserInfo):
-#     quizez: List[quiz]
-    
-
-
-# class quizOutput(quiz):
-#     user: List[userInfo]
-
-#class user_quiz(BaseModel):
-#    email: EmailStr
-#    quiz_id: int
-#    total_score: int
 
 class otp(BaseModel):
     userid: int
@@ -119,21 +54,3 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
-class PasswordReset(BaseModel):
-    email: EmailStr
-
-class UserCurrentLevel(BaseModel):
-    current_level: int
-
-class UserScore(BaseModel):
-    total_score: int
-
-class userScoreEmailId(BaseModel):
-    email: EmailStr
-    id: int
-    total_score: int 
-
-class TopScorer(BaseModel):
-    username: str
-    email: EmailStr
-    total_score: int

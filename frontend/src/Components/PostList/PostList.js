@@ -11,7 +11,7 @@ function PostsList({ key }) { // Accept the key prop
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/posts/');
+      const response = await axios.get('http://localhost:80/server2/posts/');
       
       // Sort posts by creation timestamp in descending order
       const sortedPosts = response.data.posts.sort((a, b) => {

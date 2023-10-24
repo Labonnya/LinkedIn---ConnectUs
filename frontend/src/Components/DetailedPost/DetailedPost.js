@@ -14,7 +14,7 @@ function DetailedPost() {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/posts/${postId}`);
+      const response = await axios.get(`http://localhost:80/server2/posts/${postId}`);
       setPost(response.data.post);
     } catch (error) {
       console.error('Error fetching post:', error);

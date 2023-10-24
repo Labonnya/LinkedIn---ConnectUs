@@ -13,16 +13,31 @@ function Notification() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/notifications/');
-      const notificationsWithClicked = response.data.notifications.map(notification => ({
-        ...notification,
-        clicked: false
-      }));
-      setNotifications(notificationsWithClicked);
+      if (authContext.token) {
+        const response = await axios.get('http://localhost:8000/notifications/');
+        console.log('All Notifications:', response.data.notifications);
+  
+        const notificationsFromOtherUsers = response.data.notifications.filter(notification => {
+          console.log('Notification Username:', notification.username);
+          console.log('Auth Context Username:', authContext.username);
+          return notification.username !== authContext.username;
+        });
+        console.log('Filtered Notifications:', notificationsFromOtherUsers);
+        
+        console.log(authContext.username);
+
+  
+        const notificationsWithClicked = notificationsFromOtherUsers.map(notification => ({
+          ...notification,
+          clicked: false
+        }));
+        setNotifications(notificationsWithClicked);
+      }
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
   };
+  
 
   const handleLogout = () => {
     authContext.logout();

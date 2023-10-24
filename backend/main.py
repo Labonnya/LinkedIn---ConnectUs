@@ -15,7 +15,7 @@ import minio, uuid, io
 import datetime
 import base64
 from io import BytesIO
-
+from fastapi import BackgroundTasks
 
 
 app = FastAPI()
@@ -59,12 +59,13 @@ async def startup():
         )
     ''')
     app.state.conn.execute('''
-        CREATE TABLE IF NOT EXISTS notifications (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            notification TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
+    CREATE TABLE IF NOT EXISTS notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        notification TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+''')
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -72,7 +73,7 @@ async def shutdown():
     app.state.conn.close()
 
 @app.post("/posts/", status_code=status.HTTP_201_CREATED)
-async def create_post(post: PostCreate):
+async def create_post(post: PostCreate, background_tasks: BackgroundTasks):
     if post.image:
         try:
             image_data = base64.b64decode(post.image.split(",")[1])
@@ -99,8 +100,20 @@ async def create_post(post: PostCreate):
     app.state.conn.commit()
 
     notification = f"{post.username} posted a new post"
-    c.execute("INSERT INTO notifications (notification) VALUES (?)", (notification,))
-    app.state.conn.commit()
+    c.execute("INSERT INTO notifications (username, notification) VALUES (?, ?)", (post.username, notification))
+    app.state.conn.commit() 
+
+    background_tasks.add_task(clear_old_notifications)
+
+def clear_old_notifications():
+    try:
+        cutoff_time = datetime.datetime.now() - datetime.timedelta(minutes=5)
+        c = app.state.conn.cursor()
+        c.execute("DELETE FROM notifications WHERE created_at <= ?", (cutoff_time,))
+        app.state.conn.commit()
+        print("Cleared old notifications")
+    except Exception as e:
+        print(f"An error occurred while clearing notifications: {e}")
 
     return {"message": "Post created successfully"}
 
@@ -117,12 +130,13 @@ async def get_posts():
 
 @app.get("/notifications/")
 async def get_notifications():
-    query = "SELECT notification, created_at FROM notifications"
+    query = "SELECT notification, created_at, username FROM notifications"  # Include the username in the query
     c = app.state.conn.cursor()
     c.execute(query)
     rows = c.fetchall()
-    notifications = [{"notification": row[0], "created_at": row[1]} for row in rows]
+    notifications = [{"notification": row[0], "created_at": row[1], "username": row[2]} for row in rows]
     return {"notifications": notifications}
+
 
 
 @app.get("/posts/{post_id}")
