@@ -19,7 +19,7 @@ function Register() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost/server1/user/createUser",
+        "http://localhost:80/server1/user/createUser",
         {
           fullName,
           userName,

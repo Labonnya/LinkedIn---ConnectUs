@@ -40,7 +40,7 @@ function Post() {
     };
 
     try {
-      await axios.post('http://localhost:80/server2/posts/', postData, {
+      await axios.post('http:/localhost:80/server2/posts/', postData, {
         headers: {
           'Content-Type': 'application/json',
         },
